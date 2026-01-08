@@ -1,0 +1,209 @@
+#!/bin/bash
+
+# ==============================================================================
+# ALIASES PERSONALIZADOS - Miguel Castañeda
+# Repositorio: https://github.com/miguelCastanedaV/bash_custom
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# PHP
+# ------------------------------------------------------------------------------
+alias phpunit='./vendor/bin/phpunit'
+alias phpunitf='./vendor/bin/phpunit --filter'
+alias phpserve='php -S localhost:8000'
+alias phpartisan='php artisan'
+alias phplint='php -l'
+#alias composer='php -d memory_limit=-1 /usr/local/bin/composer'
+
+# ------------------------------------------------------------------------------
+# COMPOSER
+# ------------------------------------------------------------------------------
+alias c='composer'
+alias ccp='composer create-project'
+alias cdo='composer dump-autoload -o'
+alias cdu='composer dump-autoload'
+alias cget='curl -s https://getcomposer.org/installer | php'
+alias cgr='composer global require'
+alias cgrm='composer global remove'
+alias cgu='composer global update'
+alias ci='composer install'
+alias co='composer outdated'
+alias cod='composer outdated --direct'
+alias cr='composer require'
+alias crm='composer remove'
+alias cs='composer show'
+alias csu='composer self-update'
+alias cu='composer update'
+alias cuh='composer update --working-dir=$(composer config -g home)'
+
+# ------------------------------------------------------------------------------
+# LARAVEL
+# ------------------------------------------------------------------------------
+alias art='php artisan'
+alias artm='php artisan migrate'
+alias artmf='php artisan migrate:fresh'
+alias artmfs='php artisan migrate:fresh --seed'
+alias arts='php artisan serve'
+alias artr='php artisan route:list'
+alias artc='php artisan cache:clear'
+alias artv='php artisan view:clear'
+alias artco='php artisan config:clear'
+
+# ------------------------------------------------------------------------------
+# GIT
+# ------------------------------------------------------------------------------
+alias gs='git status'
+alias gd='git diff'
+alias ga='git add'
+alias gc='git commit -m'
+alias gca='git commit --amend'
+alias gpl='git pull'
+alias gps='git push'
+alias gl='git log --oneline --graph --all'
+alias gco='git checkout'
+alias gb='git branch'
+alias gcb='git checkout -b'
+alias gr='git remote -v'
+alias gcl='git clone'
+
+# ------------------------------------------------------------------------------
+# DOCKER
+# ------------------------------------------------------------------------------
+alias d='docker'
+alias di='docker images'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias dcu='docker-compose up'
+alias dcd='docker-compose down'
+alias dcb='docker-compose build'
+alias dce='docker-compose exec'
+alias dcl='docker-compose logs -f'
+
+# ------------------------------------------------------------------------------
+# SISTEMA/LINUX
+# ------------------------------------------------------------------------------
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias lt='ls -larth'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias grep='grep --color=auto'
+alias mkdir='mkdir -p'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias psg='ps aux | grep'
+alias h='history'
+alias j='jobs -l'
+alias myip='curl ifconfig.me'
+alias wget='wget -c'
+
+# ------------------------------------------------------------------------------
+# PERSONALIZADOS
+# ------------------------------------------------------------------------------
+alias editbash='nano ~/.bash.custom'
+alias sourcebash='source ~/.bash.custom'
+alias editzsh='nano ~/.zshrc'
+alias sourcezsh='source ~/.zshrc'
+alias showaliases='cat ~/.bash.custom | grep "^alias "'
+alias updatealiases='curl -fsSL https://raw.githubusercontent.com/miguelCastanedaV/bash_custom/main/.bash.custom -o ~/.bash.custom && source ~/.bash.custom'
+
+# ------------------------------------------------------------------------------
+# FUNCIONES ÚTILES
+# ------------------------------------------------------------------------------
+mkcd() { mkdir -p "$1" && cd "$1"; }
+findf() { find . -type f -name "*$1*" 2>/dev/null; }
+backup() { cp "$1" "$1.backup.$(date +%Y%m%d_%H%M%S)"; echo "✓ Backup creado: $1.backup"; }
+
+
+# ------------------------------------------------------------------------------
+# CATÁLOGO DE COMANDOS
+# ------------------------------------------------------------------------------
+alias catalog='show_catalog'
+alias commands='list_all_commands'
+
+
+# Catálogo bonito
+show_catalog() {
+    echo ""
+    echo -e "\033[1;36m╔══════════════════════════════════════════════════════════════╗\033[0m"
+    echo -e "\033[1;36m║           🚀 COMANDOS PERSONALIZADOS - miguelCastanedaV     ║\033[0m"
+    echo -e "\033[1;36m║           📅 Última actualización: $(date +"%d/%m/%Y %H:%M")          ║\033[0m"
+    echo -e "\033[1;36m╚══════════════════════════════════════════════════════════════╝\033[0m"
+    echo ""
+    
+    echo -e "\033[1;33m📦 PHP & COMPOSER:\033[0m"
+    echo "  phpunit, phpunitf, phpserve, phpartisan, phplint"
+    echo "  c, ccp, cdo, cr, cdo, cda, cdu, cget, cgr, cgrm, cgu, ci, co, cod, cr, crm, cs, csu, cu, cuh"
+    echo ""
+    
+    echo -e "\033[1;33m🛠️  LARAVEL:\033[0m"
+    echo "  art, artm, artmf, artmfs, arts, artr, artc, artv, artco"
+    echo ""
+    
+    echo -e "\033[1;33m🌳 GIT:\033[0m"
+    echo "  gs, gd, ga, gc, gca, gpl, gps, gl, gco, gb, gcb, gr, gcl"
+    echo ""
+    
+    echo -e "\033[1;33m🐳 DOCKER:\033[0m"
+    echo "  d, di, dps, dpsa, dcu, dcd, dcb, dce, dcl"
+    echo ""
+    
+    echo -e "\033[1;33m💻 SISTEMA:\033[0m"
+    echo "  ll, la, l, lt, .., ..., ...., mkdir, df, du, free, psg, h, j, myip, wget"
+    echo ""
+    
+    echo -e "\033[1;33m🔧 HERRAMIENTAS:\033[0m"
+    echo "  editbash, sourcebash, editzsh, sourcezsh, showaliases, updatealiases"
+    echo ""
+    
+    echo -e "\033[1;33m⚡ FUNCIONES:\033[0m"
+    echo "  mkcd <dir>, findf <pat>, backup <file>"
+    echo ""
+    
+    echo -e "\033[1;32m📖 Para ver detalles: commands  |  Para actualizar: updatealiases\033[0m"
+    echo ""
+}
+
+# Lista completa
+list_all_commands() {
+    echo ""
+    echo -e "\033[1;35m📋 LISTA COMPLETA DE ALIASES:\033[0m"
+    echo ""
+    
+    # Extraer y formatear aliases sin usar 'column'
+    grep "^alias " ~/.bash.custom | sed 's/alias //' | while IFS='=' read -r name value; do
+        # Limpiar espacios extras y mostrar de forma legible
+        printf "\033[1;36m%-20s\033[0m = %s\n" "$name" "$value"
+    done
+    
+    echo ""
+    echo -e "\033[1;35m⚡ FUNCIONES DISPONIBLES:\033[0m"
+    echo ""
+    
+    # Extraer nombres de funciones (más robusto)
+    grep -E '^[a-zA-Z_][a-zA-Z0-9_]*\(\)' ~/.bash.custom | awk -F'(' '{print $1}' | sort -u | while read func; do
+        echo "  $func"
+    done
+    
+    local total=$(grep -c "^alias " ~/.bash.custom)
+    echo ""
+    echo -e "\033[1;36m✅ Total: $total aliases disponibles\033[0m"
+    echo -e "\033[1;33m💡 Usa 'catalog' para ver el catálogo organizado por categorías\033[0m"
+    echo ""
+}
+
+# Quick help
+alias ?='echo -e "\033[1;33m💡 Ayuda rápida:\n• catalog - Ver catálogo\n• commands - Lista completa\n• updatealiases - Actualizar\n• editbash - Editar este archivo\033[0m"'
+
+
+# ------------------------------------------------------------------------------
+# COLORES PARA PROMPT (opcional)
+# ------------------------------------------------------------------------------
+export PS1="\[\033[38;5;33m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;160m\]\h\[$(tput sgr0)\]:\[$(tput sgr0)\]\[\033[38;5;118m\]\w\[$(tput sgr0)\]\\$ \[$(tput sgr0)\]"
+
+# ==============================================================================
+# FIN DEL ARCHIVO
+# ==============================================================================
