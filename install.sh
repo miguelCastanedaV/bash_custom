@@ -62,7 +62,7 @@ check_installed() {
 # Descargar .bash.custom
 download_file() {
     log_info "Descargando ${CUSTOM_FILE} desde GitHub..."
-    
+
     if command -v curl &> /dev/null; then
         if curl -fsSL "$BASHCUSTOM_URL" -o "$LOCAL_FILE"; then
             log_success "Archivo descargado a ${LOCAL_FILE}"
@@ -83,35 +83,35 @@ download_file() {
         log_error "  macOS: brew install curl"
         exit 1
     fi
-    
+
     # Verificar que no esté vacío
     if [[ ! -s "$LOCAL_FILE" ]]; then
         log_error "El archivo descargado está vacío"
         exit 1
     fi
-    
+
     chmod 644 "$LOCAL_FILE"
 }
 
 # Configurar shell
 configure_shell() {
     local shell_rc="$1"
-    
+
     log_info "Configurando ${shell_rc}..."
-    
+
     # Crear backup si existe
     if [[ -f "$shell_rc" ]]; then
         cp "$shell_rc" "${shell_rc}.backup.$(date +%Y%m%d_%H%M%S)"
         log_success "Backup creado: ${shell_rc}.backup"
     fi
-    
+
     # Remover configuraciones anteriores de este script
     if [[ -f "$shell_rc" ]]; then
         grep -v "source.*${CUSTOM_FILE}" "$shell_rc" | \
         grep -v "# miguelCastanedaV/bash_custom" > "${shell_rc}.tmp" 2>/dev/null || true
         mv "${shell_rc}.tmp" "$shell_rc"
     fi
-    
+
     # Agregar la nueva configuración
     echo "" >> "$shell_rc"
     echo "# ==============================================================================" >> "$shell_rc"
@@ -123,8 +123,21 @@ configure_shell() {
     echo "    source ~/${CUSTOM_FILE}" >> "$shell_rc"
     echo "fi" >> "$shell_rc"
     echo "" >> "$shell_rc"
-    
+
     log_success "Configuración agregada a ${shell_rc}"
+}
+
+apply_changes() {
+    echo ""
+    echo "Aplicando cambios a tu terminal actual..."
+    sleep 1
+
+    if [ -f ~/.bash_custom ]; then
+        # Cargar el archivo personalizado
+        source ~/.bash_custom
+        echo "✅ ¡Listo! Los cambios se han aplicado a esta sesión."
+        echo "   Para futuras sesiones, se cargarán automáticamente."
+    fi
 }
 
 # Instalación principal
@@ -139,7 +152,8 @@ main() {
     check_installed
     download_file
     configure_shell "$SHELL_RC"
-    
+    apply_changes
+
     # Mostrar resumen
     echo ""
     log_success "¡Instalación completada exitosamente!"
