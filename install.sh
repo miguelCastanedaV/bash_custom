@@ -24,6 +24,9 @@ BASHCUSTOM_URL="https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/
 CUSTOM_FILE=".bash.custom"
 LOCAL_FILE="$HOME/${CUSTOM_FILE}"
 
+# Variables de estado
+INSTALLED_BUT_NOT_UPDATED=false
+
 # Funciones de log
 log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[✓]${NC} $1"; }
@@ -50,12 +53,15 @@ detect_shell() {
 check_installed() {
     if [[ -f "$LOCAL_FILE" ]]; then
         log_warning "El archivo ${CUSTOM_FILE} ya existe en ${LOCAL_FILE}"
-        echo -n "¿Deseas sobrescribirlo? (s/n): "
+        echo -n "¿Deseas actualizarlo desde GitHub? (s/n): "
         read -r response
         if [[ ! "$response" =~ ^[Ss]$ ]]; then
-            log_info "Instalación cancelada"
-            exit 0
+            log_info "Actualización cancelada, manteniendo versión actual"
+            # Pero aún así aplicar cambios si el archivo existe
+            INSTALLED_BUT_NOT_UPDATED=true
+            return 0
         fi
+        # Si dice que sí, se procederá con la descarga
     fi
 }
 
@@ -96,6 +102,7 @@ download_file() {
 # Configurar shell
 configure_shell() {
     local shell_rc="$1"
+    local marker="# Repositorio: https://github.com/miguelCastanedaV/bash_custom"
 
     log_info "Configurando ${shell_rc}..."
 
@@ -105,11 +112,11 @@ configure_shell() {
         log_success "Backup creado: ${shell_rc}.backup"
     fi
 
-    # Remover configuraciones anteriores de este script
-    if [[ -f "$shell_rc" ]]; then
-        grep -v "source.*${CUSTOM_FILE}" "$shell_rc" | \
-        grep -v "# miguelCastanedaV/bash_custom" > "${shell_rc}.tmp" 2>/dev/null || true
-        mv "${shell_rc}.tmp" "$shell_rc"
+    # Eliminar configuraciones previas si existen
+    if grep -q "$marker" "$shell_rc" 2>/dev/null; then
+        log_info "Eliminando configuración previa..."
+        # Eliminar desde el marcador hasta la línea después de 'fi'
+        sed -i '/# ==============================================================================/,/^fi$/d' "$shell_rc" 2>/dev/null
     fi
 
     # Agregar la nueva configuración
@@ -127,19 +134,6 @@ configure_shell() {
     log_success "Configuración agregada a ${shell_rc}"
 }
 
-apply_changes() {
-    echo ""
-    echo "Aplicando cambios a tu terminal actual..."
-    sleep 1
-
-    if [ -f ~/.bash_custom ]; then
-        # Cargar el archivo personalizado
-        source ~/.bash_custom
-        echo "✅ ¡Listo! Los cambios se han aplicado a esta sesión."
-        echo "   Para futuras sesiones, se cargarán automáticamente."
-    fi
-}
-
 # Instalación principal
 main() {
     echo ""
@@ -150,9 +144,13 @@ main() {
     
     detect_shell
     check_installed
-    download_file
+
+    # Solo descargar si no está instalado o si el usuario quiere actualizar
+    if [[ "$INSTALLED_BUT_NOT_UPDATED" != "true" ]]; then
+        download_file
+    fi
+
     configure_shell "$SHELL_RC"
-    apply_changes
 
     # Mostrar resumen
     echo ""
